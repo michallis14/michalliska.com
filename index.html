@@ -430,6 +430,53 @@
     transform: translate(4px, -4px);
   }
 
+  /* ---------- project index ---------- */
+  .index-head {
+    margin: 96px 0 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .index-head p { color: var(--cream-dim); font-size: 15px; }
+  .index-list { border-top: 1px solid var(--hairline); }
+  .index-row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 0.9fr) minmax(0, 1.4fr) 24px;
+    gap: 24px;
+    align-items: baseline;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    transition: background 0.25s, padding-left 0.25s;
+  }
+  a.index-row:hover { background: rgba(47, 215, 154, 0.05); padding-left: 14px; }
+  .index-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--emerald);
+  }
+  .index-name {
+    font-family: var(--display);
+    font-size: 22px;
+    text-transform: uppercase;
+    color: var(--cream);
+    line-height: 1.1;
+  }
+  .index-desc { color: var(--cream-dim); font-size: 14.5px; }
+  .index-arrow { color: var(--cream-dim); font-size: 16px; justify-self: end; transition: color 0.25s, transform 0.25s; }
+  a.index-row:hover .index-arrow { color: var(--emerald); transform: translate(3px, -3px); }
+  @media (max-width: 820px) {
+    .index-row { grid-template-columns: 1fr 24px; gap: 6px 12px; }
+    .index-tag { grid-column: 1; }
+    .index-name { grid-column: 1; }
+    .index-desc { grid-column: 1; }
+    .index-arrow { grid-row: 1; grid-column: 2; }
+  }
+
   /* ---------- finale ---------- */
   .finale {
     border-top: 1px solid var(--hairline);
@@ -614,7 +661,7 @@
         <h3>I run<br><span class="outline">SaaS ops</span></h3>
       </div>
       <div class="pillar-copy">
-        <p><strong>COO at Actual Reports</strong>, an Estonian SaaS company. I lead daily operations from Brno. Execution across product, sales, partnerships, and finance. I own growth of PDF Generator API and the Erply partnership.</p>
+        <p><strong>COO at Actual Reports</strong>, an Estonian SaaS company. I lead daily operations from Brno. Execution across product, sales, partnerships, and finance.</p>
         <div class="pillar-fact">Actual Reports · 2019 to present</div>
       </div>
     </div>
@@ -640,7 +687,7 @@
         <h3>I build<br><span class="outline">in public</span></h3>
       </div>
       <div class="pillar-copy">
-        <p><strong>Creator of @dennik_ai.</strong> AI explained in Slovak, in video reels I write and animate in code. Claude enthusiast and one of the organizers of <a href="https://claudebrno.com" target="_blank" rel="noopener">Claude Brno</a>. I also ship websites and automation for real organizations, from a youth football academy to a law firm.</p>
+        <p><strong>Creator of @dennik_ai.</strong> AI explained in Slovak, in video reels I write and animate in code. Claude enthusiast and one of the organizers of <a href="https://claudebrno.com" target="_blank" rel="noopener">Claude Brno</a>. I also ship websites and automation for real organizations, from a football academy to cleaning services or coaching.</p>
         <div class="pillar-fact">@dennik_ai · claudebrno.com · cfmja.sk · poulicnybarbershop.sk</div>
       </div>
     </div>
@@ -677,6 +724,55 @@
         <span class="card-role">PhD candidate · BUT Brno</span>
       </a>
     </div>
+
+    <div class="index-head reveal">
+      <div class="eyebrow">Project index</div>
+      <p>Client work and side projects, past and present.</p>
+    </div>
+    <div class="index-list reveal">
+      <a class="index-row" href="https://www.cfmja.sk" target="_blank" rel="noopener">
+        <span class="index-tag">Football club</span>
+        <span class="index-name">CFM JA academy</span>
+        <span class="index-desc">Full club site with a match calendar that updates itself from Futbalnet, a content bot for coaches, and generated matchday graphics.</span>
+        <span class="index-arrow">&#8599;</span>
+      </a>
+      <a class="index-row" href="https://www.poulicnybarbershop.sk" target="_blank" rel="noopener">
+        <span class="index-tag">Local business</span>
+        <span class="index-name">Pouli&#269;n&#253; Barbershop</span>
+        <span class="index-desc">Website, brand, and a complete online booking system. Customers pick a barber and a slot, the calendar handles the rest.</span>
+        <span class="index-arrow">&#8599;</span>
+      </a>
+      <a class="index-row" href="https://www.rucickyzlate.sk" target="_blank" rel="noopener">
+        <span class="index-tag">Cleaning services</span>
+        <span class="index-name">Ru&#269;i&#269;ky Zlat&#233;</span>
+        <span class="index-desc">Cleaning company I co-own. Brand, website, and the financial side of running it.</span>
+        <span class="index-arrow">&#8599;</span>
+      </a>
+      <div class="index-row">
+        <span class="index-tag">Coaching</span>
+        <span class="index-name">Individual coach</span>
+        <span class="index-desc">Personal website for an individual coach, built to win clients from a single page.</span>
+        <span class="index-arrow"></span>
+      </div>
+      <div class="index-row">
+        <span class="index-tag">Legal tech</span>
+        <span class="index-name">Law firm automation</span>
+        <span class="index-desc">Document automation delivery for a Czech legal practice. Insolvency filings generated instead of typed.</span>
+        <span class="index-arrow"></span>
+      </div>
+      <div class="index-row">
+        <span class="index-tag">Low-code</span>
+        <span class="index-name">MVPs &amp; automations</span>
+        <span class="index-desc">Reservation systems, a merchant mobile app, database automations. Lean builds tested with real users.</span>
+        <span class="index-arrow"></span>
+      </div>
+      <a class="index-row" href="https://michal-liska.medium.com/" target="_blank" rel="noopener">
+        <span class="index-tag">Writing</span>
+        <span class="index-name">Medium articles</span>
+        <span class="index-desc">Occasional writing on low-code, project management, and building things simply.</span>
+        <span class="index-arrow">&#8599;</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -699,6 +795,7 @@
   <div class="foot-links">
     <a href="https://www.linkedin.com/in/michal-liska" target="_blank" rel="noopener">LinkedIn</a>
     <a href="https://www.instagram.com/dennik_ai/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://michal-liska.medium.com/" target="_blank" rel="noopener">Medium</a>
     <a href="https://canva.link/nteajz68015fsy5" target="_blank" rel="noopener">Second Brain</a>
     <a href="mailto:michal.liska97@gmail.com">Email</a>
   </div>
