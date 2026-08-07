@@ -1,0 +1,47 @@
+# michalliska.com — short-link redirects + HTTPS force
+# Apache mod_rewrite required (Websupport ho má aktivovaný)
+
+RewriteEngine On
+
+# Force HTTPS (vždy)
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Force apex (bez www) — odkomentuj ak chceš
+# RewriteCond %{HTTP_HOST} ^www\.michalliska\.com$ [NC]
+# RewriteRule ^(.*)$ https://michalliska.com/$1 [R=301,L]
+
+# Short links → external destinations
+# 302 = temporary (môžeš v budúcnosti zmeniť target bez seo penalty)
+
+RewriteRule ^setup/?$ https://www.skool.com/useful-ai/classroom/59a00292?md=e78d3bb335f8414bb88b888c7bbde1d0 [R=302,L,NE]
+RewriteRule ^yt/?$ https://youtu.be/4l8MXYUqGaA?si=H39Cu6yygcd7h3p- [R=302,L,NE]
+RewriteRule ^in/?$ https://www.linkedin.com/in/michal-liska/ [R=302,L,NE]
+RewriteRule ^ig/?$ https://www.instagram.com/dennik_ai/ [R=302,L,NE]
+
+# Bonus aliases (rovnaké ciele, iné slová — pre prípad keby si publikum spomenulo)
+RewriteRule ^zip/?$ https://www.skool.com/useful-ai/classroom/59a00292?md=e78d3bb335f8414bb88b888c7bbde1d0 [R=302,L,NE]
+RewriteRule ^vault/?$ https://www.skool.com/useful-ai/classroom/59a00292?md=e78d3bb335f8414bb88b888c7bbde1d0 [R=302,L,NE]
+RewriteRule ^youtube/?$ https://youtu.be/4l8MXYUqGaA?si=H39Cu6yygcd7h3p- [R=302,L,NE]
+RewriteRule ^tutorial/?$ https://youtu.be/4l8MXYUqGaA?si=H39Cu6yygcd7h3p- [R=302,L,NE]
+RewriteRule ^linkedin/?$ https://www.linkedin.com/in/michal-liska/ [R=302,L,NE]
+RewriteRule ^instagram/?$ https://www.instagram.com/dennik_ai/ [R=302,L,NE]
+RewriteRule ^dennik/?$ https://www.instagram.com/dennik_ai/ [R=302,L,NE]
+
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 1 hour"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes

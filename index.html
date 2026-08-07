@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michal Líška · Operations, AI research, building</title>
+<meta name="description" content="Michal Líška. COO at Actual Reports, PhD researcher in AI and organizational trust, creator of @dennik_ai. Based in Brno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap&subset=latin-ext" rel="stylesheet">
+<style>
+  :root {
+    --ink: #080b0a;
+    --ink-2: #0d1210;
+    --cream: #f4efe6;
+    --cream-dim: #9aa39d;
+    --emerald: #2fd79a;
+    --emerald-deep: #0e7a56;
+    --hairline: rgba(244, 239, 230, 0.12);
+    --display: 'Anton', 'Arial Narrow', sans-serif;
+    --body: 'Archivo', 'Helvetica Neue', sans-serif;
+    --mono: 'Space Mono', 'Courier New', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--emerald); color: var(--ink); }
+
+  a { color: inherit; }
+
+  /* ---------- grain ---------- */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 90;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- nav ---------- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    mix-blend-mode: difference;
+  }
+
+  .nav-mark {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  nav .nav-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid currentColor;
+    padding: 8px 16px;
+    border-radius: 100px;
+    transition: opacity 0.2s;
+  }
+  nav .nav-cta:hover { opacity: 0.6; }
+
+  /* ---------- hero ---------- */
+  .hero { height: 320vh; position: relative; }
+
+  .hero-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+
+  .hero-center {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .orbit-ring {
+    position: absolute;
+    width: min(72vmin, 560px);
+    height: min(72vmin, 560px);
+    z-index: 1;
+    will-change: transform;
+  }
+  .orbit-ring text {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.35em;
+    fill: var(--emerald);
+    text-transform: uppercase;
+  }
+
+  .portrait-frame {
+    position: relative;
+    width: min(52vmin, 400px);
+    height: min(66vmin, 520px);
+    z-index: 3;
+    border-radius: min(26vmin, 200px);
+    overflow: hidden;
+    will-change: transform;
+    background: radial-gradient(120% 90% at 50% 20%, #17271f 0%, var(--ink-2) 65%);
+    box-shadow:
+      0 0 0 1px rgba(47, 215, 154, 0.25),
+      0 0 60px rgba(47, 215, 154, 0.12),
+      inset 0 0 80px rgba(0, 0, 0, 0.55);
+  }
+  .portrait-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.25) contrast(1.06);
+  }
+  .portrait-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(200deg, rgba(47, 215, 154, 0.16) 0%, transparent 32%),
+                linear-gradient(0deg, rgba(8, 11, 10, 0.55) 0%, transparent 38%);
+    pointer-events: none;
+  }
+  /* fallback when no portrait file yet */
+  .portrait-frame.no-photo img { display: none; }
+  .portrait-frame.no-photo::before {
+    content: 'ML';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-size: min(22vmin, 170px);
+    color: rgba(47, 215, 154, 0.35);
+    letter-spacing: 0.02em;
+  }
+
+  .name-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    line-height: 0.92;
+    pointer-events: none;
+    font-family: var(--display);
+    font-size: clamp(64px, 15vw, 210px);
+    text-transform: uppercase;
+    color: var(--cream);
+    will-change: transform, opacity;
+  }
+  .name-top {
+    top: 11vh;
+    z-index: 2;
+    color: rgba(244, 239, 230, 0.9);
+  }
+  .name-bottom {
+    bottom: 15vh;
+    z-index: 4;
+    text-shadow: 0 2px 30px rgba(8, 11, 10, 0.6);
+  }
+  .name-layer .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.35em);
+    animation: char-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes char-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-sub {
+    position: absolute;
+    bottom: 6vh;
+    z-index: 4;
+    text-align: center;
+    width: 100%;
+    padding: 0 24px;
+  }
+  .hero-sub p {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0;
+    animation: char-in 1s 1.1s ease forwards;
+  }
+  .hero-sub p em { color: var(--emerald); font-style: normal; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    width: 1px;
+    height: 26px;
+    background: linear-gradient(var(--emerald), transparent);
+    animation: hint 1.8s ease-in-out infinite;
+  }
+  @keyframes hint {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
+
+  /* ---------- sections shared ---------- */
+  section { position: relative; }
+
+  .shell { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--emerald);
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: clamp(44px, 7vw, 96px);
+    text-transform: uppercase;
+    line-height: 0.95;
+    font-weight: 400;
+  }
+
+  /* ---------- stats ---------- */
+  .stats {
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    background: var(--ink-2);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat {
+    padding: 56px 24px;
+    text-align: center;
+    border-left: 1px solid var(--hairline);
+  }
+  .stat:first-child { border-left: none; }
+  .stat-num {
+    font-family: var(--display);
+    font-size: clamp(48px, 6vw, 88px);
+    color: var(--cream);
+    line-height: 1;
+  }
+  .stat-num .plus { color: var(--emerald); }
+  .stat-label {
+    margin-top: 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+
+  /* ---------- pillars ---------- */
+  .pillars-head { padding: 140px 0 80px; }
+
+  .pillar {
+    position: sticky;
+    top: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--hairline);
+    background: var(--ink);
+  }
+  .pillar:nth-child(odd) { background: var(--ink-2); }
+
+  .pillar-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: end;
+    width: 100%;
+    padding: 96px 0;
+  }
+
+  .pillar-index {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--emerald);
+    margin-bottom: 24px;
+  }
+
+  .pillar h3 {
+    font-family: var(--display);
+    font-size: clamp(52px, 8vw, 130px);
+    text-transform: uppercase;
+    line-height: 0.92;
+    font-weight: 400;
+  }
+  .pillar h3 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--emerald);
+  }
+
+  .pillar-copy p {
+    color: var(--cream-dim);
+    max-width: 44ch;
+  }
+  .pillar-copy p strong { color: var(--cream); font-weight: 600; }
+  .pillar-copy .pillar-fact {
+    margin-top: 24px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    color: var(--emerald);
+  }
+
+  /* ---------- work ---------- */
+  .work { padding: 160px 0 120px; }
+  .work-head { margin-bottom: 72px; }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    padding: 36px 28px 32px;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink-2);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s, box-shadow 0.35s;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(90% 60% at 50% 0%, rgba(47, 215, 154, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(47, 215, 154, 0.5);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--emerald);
+  }
+  .card h4 {
+    font-family: var(--display);
+    font-size: clamp(30px, 3vw, 42px);
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 1;
+    margin: 18px 0 14px;
+  }
+  .card p {
+    color: var(--cream-dim);
+    font-size: 15.5px;
+    flex-grow: 1;
+  }
+  .card-role {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cream-dim);
+    letter-spacing: 0.08em;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hairline);
+  }
+  .card-arrow {
+    position: absolute;
+    top: 28px;
+    right: 26px;
+    color: var(--cream-dim);
+    transition: color 0.3s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 18px;
+  }
+  .card:hover .card-arrow {
+    color: var(--emerald);
+    transform: translate(4px, -4px);
+  }
+
+  /* ---------- finale ---------- */
+  .finale {
+    border-top: 1px solid var(--hairline);
+    padding: 180px 0 160px;
+    text-align: center;
+    background: radial-gradient(60% 50% at 50% 100%, rgba(14, 122, 86, 0.22), transparent 75%), var(--ink);
+  }
+  .finale h2 { margin-bottom: 28px; }
+  .finale-sub {
+    color: var(--cream-dim);
+    max-width: 46ch;
+    margin: 0 auto 52px;
+  }
+  .btn-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 36px;
+    border-radius: 100px;
+    transition: transform 0.25s, box-shadow 0.25s, background 0.25s, color 0.25s;
+  }
+  .btn-primary {
+    background: var(--emerald);
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(47, 215, 154, 0.35);
+  }
+  .btn-ghost {
+    border: 1px solid var(--hairline);
+    color: var(--cream);
+  }
+  .btn-ghost:hover {
+    border-color: var(--emerald);
+    color: var(--emerald);
+    transform: translateY(-3px);
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding: 36px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .foot-links { display: flex; gap: 28px; }
+  footer a {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--cream-dim);
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--emerald); }
+  .foot-note {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cream-dim);
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-left: none; border-top: 1px solid var(--hairline); }
+    .stat:nth-child(-n+2) { border-top: none; }
+    .pillar-inner { grid-template-columns: 1fr; gap: 32px; align-items: start; }
+    .work-grid { grid-template-columns: 1fr; }
+    .card { min-height: 0; }
+    .hero { height: 220vh; }
+  }
+
+  /* static mode for rendering checks: ?static=1 */
+  html.static .reveal { opacity: 1; transform: none; transition: none; }
+  html.static .name-layer .char, html.static .hero-sub p { animation: none; opacity: 1; transform: none; }
+  html.static .hero { height: 100vh; }
+  html.static .pillar { position: relative; min-height: 0; }
+  html.cut-stats .hero { display: none; }
+  html.cut-pillars .hero, html.cut-pillars .stats { display: none; }
+  html.cut-work .hero, html.cut-work .stats, html.cut-work .pillars { display: none; }
+  html.cut-contact .hero, html.cut-contact .stats, html.cut-contact .pillars, html.cut-contact .work { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .name-layer .char, .hero-sub p { animation: none; opacity: 1; transform: none; }
+    .scroll-hint { display: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<nav>
+  <a class="nav-mark" href="#top">ML&#8202;/&#8202;BRNO</a>
+  <a class="nav-cta" href="https://calendar.app.google/AtgAoAKzQrSC9w7U9" target="_blank" rel="noopener">Book a call</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-stage">
+    <div class="hero-center">
+      <svg class="orbit-ring" id="orbitRing" viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <path id="circlePath" d="M 100,100 m -88,0 a 88,88 0 1,1 176,0 a 88,88 0 1,1 -176,0"/>
+        </defs>
+        <text>
+          <textPath href="#circlePath" textLength="552" lengthAdjust="spacing">Operator&#160;·&#160;Researcher&#160;·&#160;Builder&#160;·&#160;Operator&#160;·&#160;Researcher&#160;·&#160;Builder&#160;·</textPath>
+        </text>
+      </svg>
+      <div class="portrait-frame" id="portrait">
+        <img src="assets/portrait.jpg" alt="Portrait of Michal Líška"
+             onerror="this.parentElement.classList.add('no-photo')">
+      </div>
+    </div>
+    <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);">Michal Líška</h1>
+    <div class="name-layer name-top" data-text="MICHAL" aria-hidden="true"></div>
+    <div class="name-layer name-bottom" data-text="LÍŠKA" aria-hidden="true"></div>
+    <div class="hero-sub">
+      <p>SaaS operations <em>·</em> AI research <em>·</em> building in public <em>·</em> Brno</p>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats" id="stats">
+  <div class="stats-grid">
+    <div class="stat reveal">
+      <div class="stat-num"><span data-count="8">0</span><span class="plus">+</span></div>
+      <div class="stat-label">Years in IT and SaaS</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num"><span data-count="6">0</span></div>
+      <div class="stat-label">Products under management</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num"><span data-count="4">0</span></div>
+      <div class="stat-label">Research publications</div>
+    </div>
+    <div class="stat reveal">
+      <div class="stat-num"><span data-count="3">0</span></div>
+      <div class="stat-label">Countries I work across</div>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars">
+  <div class="shell pillars-head reveal">
+    <div class="eyebrow">What I do</div>
+    <h2>Three tracks.<br>One operator.</h2>
+  </div>
+
+  <div class="pillar">
+    <div class="shell pillar-inner">
+      <div>
+        <div class="pillar-index">Track A · Operations</div>
+        <h3>I run<br><span class="outline">SaaS ops</span></h3>
+      </div>
+      <div class="pillar-copy">
+        <p><strong>COO at Actual Reports</strong>, an Estonian SaaS company. I lead daily operations from Brno. Execution across product, sales, partnerships, and finance. I own growth of PDF Generator API and the Erply partnership.</p>
+        <div class="pillar-fact">Actual Reports · 2019 to present</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pillar">
+    <div class="shell pillar-inner">
+      <div>
+        <div class="pillar-index">Track B · Research</div>
+        <h3>I study<br><span class="outline">AI &amp; trust</span></h3>
+      </div>
+      <div class="pillar-copy">
+        <p><strong>PhD researcher at Brno University of Technology.</strong> My work explores how AI changes trust, digital competencies, and decision making inside organizations. It feeds directly back into the operational decisions I make every day.</p>
+        <div class="pillar-fact">4 publications · EU Horizon STAR project · teaching</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pillar">
+    <div class="shell pillar-inner">
+      <div>
+        <div class="pillar-index">Track C · Building</div>
+        <h3>I build<br><span class="outline">in public</span></h3>
+      </div>
+      <div class="pillar-copy">
+        <p><strong>Creator of @dennik_ai.</strong> AI explained in Slovak, in video reels I write and animate in code. I also ship websites and automation for real organizations, from a youth football academy to a law firm.</p>
+        <div class="pillar-fact">@dennik_ai · cfmja.sk · Remotion</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="shell">
+    <div class="work-head reveal">
+      <div class="eyebrow">Selected work</div>
+      <h2>Proof, not promises.</h2>
+    </div>
+    <div class="work-grid">
+      <a class="card reveal" href="https://pdfgeneratorapi.com" target="_blank" rel="noopener">
+        <span class="card-arrow">&#8599;</span>
+        <span class="card-tag">B2B SaaS</span>
+        <h4>PDF Generator API</h4>
+        <p>Document automation used by developers worldwide. I drive its growth strategy as COO. Pricing, positioning, and retention against Adobe, DocRaptor, and PDFShift.</p>
+        <span class="card-role">COO · Actual Reports</span>
+      </a>
+      <a class="card reveal" href="https://www.instagram.com/dennik_ai/" target="_blank" rel="noopener">
+        <span class="card-arrow">&#8599;</span>
+        <span class="card-tag">Media</span>
+        <h4>@dennik_ai</h4>
+        <p>AI news and myths explained in Slovak. Every reel is animated in code with Remotion, from research to script to render. Live and posting since April 2026.</p>
+        <span class="card-role">Founder &amp; creator</span>
+      </a>
+      <a class="card reveal" href="https://www.linkedin.com/in/michal-liska" target="_blank" rel="noopener">
+        <span class="card-arrow">&#8599;</span>
+        <span class="card-tag">Research</span>
+        <h4>AI &amp; organizational trust</h4>
+        <p>Doctoral research on what AI does to trust and competencies at work. Four publications, conference talks in Bucharest and Vienna, and a role in an EU Horizon project.</p>
+        <span class="card-role">PhD candidate · BUT Brno</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FINALE -->
+<section class="finale" id="contact">
+  <div class="shell">
+    <div class="reveal">
+      <div class="eyebrow">Contact</div>
+      <h2>Let&#8217;s talk.</h2>
+      <p class="finale-sub">A project, a partnership, a stage, or a hard operations problem. Pick a time that works for you or write me directly.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://calendar.app.google/AtgAoAKzQrSC9w7U9" target="_blank" rel="noopener">Book a call</a>
+        <a class="btn btn-ghost" href="mailto:michal.liska97@gmail.com">Write me</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-links">
+    <a href="https://www.linkedin.com/in/michal-liska" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.instagram.com/dennik_ai/" target="_blank" rel="noopener">Instagram</a>
+    <a href="mailto:michal.liska97@gmail.com">Email</a>
+  </div>
+  <div class="foot-note">Michal Líška · Brno · 2026</div>
+</footer>
+
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function () {
+  var staticMode = /[?&]static=1/.test(location.search);
+  if (staticMode) document.documentElement.classList.add('static');
+  var cut = location.search.match(/[?&]section=(\w+)/);
+  if (cut) document.documentElement.classList.add('cut-' + cut[1]);
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || staticMode;
+
+  /* letter-by-letter name */
+  document.querySelectorAll('.name-layer').forEach(function (line, li) {
+    var text = line.getAttribute('data-text');
+    text.split('').forEach(function (ch, i) {
+      var s = document.createElement('span');
+      s.className = 'char';
+      s.textContent = ch;
+      s.style.animationDelay = (0.15 + li * 0.3 + i * 0.06) + 's';
+      line.appendChild(s);
+    });
+  });
+
+  /* smooth scroll */
+  var lenis = null;
+  if (!reduceMotion && window.Lenis) {
+    lenis = new Lenis({ lerp: 0.09 });
+    function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+  }
+
+  /* hero scrub: orbit ring rotation + portrait drift */
+  var hero = document.querySelector('.hero');
+  var ring = document.getElementById('orbitRing');
+  var portrait = document.getElementById('portrait');
+  var nameTop = document.querySelector('.name-top');
+  var nameBottom = document.querySelector('.name-bottom');
+  var ticking = false;
+
+  function scrub() {
+    ticking = false;
+    if (reduceMotion) return;
+    var rect = hero.getBoundingClientRect();
+    var total = hero.offsetHeight - window.innerHeight;
+    var p = Math.min(Math.max(-rect.top / total, 0), 1);
+    var fade = String(1 - Math.max(0, (p - 0.55)) * 2.2);
+    ring.style.transform = 'rotate(' + (p * 240) + 'deg) scale(' + (1 + p * 0.12) + ')';
+    portrait.style.transform =
+      'perspective(900px) rotateY(' + ((p - 0.15) * 26) + 'deg) translateY(' + (p * -30) + 'px) scale(' + (1 + p * 0.05) + ')';
+    nameTop.style.transform = 'translateY(' + (p * -70) + 'px)';
+    nameBottom.style.transform = 'translateY(' + (p * 70) + 'px)';
+    nameTop.style.opacity = fade;
+    nameBottom.style.opacity = fade;
+  }
+
+  function onScroll() {
+    if (!ticking) { ticking = true; requestAnimationFrame(scrub); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  scrub();
+
+  /* reveal on scroll */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  /* count-up stats */
+  var counted = false;
+  var statIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting && !counted) {
+        counted = true;
+        document.querySelectorAll('[data-count]').forEach(function (el) {
+          var target = parseInt(el.getAttribute('data-count'), 10);
+          var start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            var k = Math.min((ts - start) / 1100, 1);
+            var eased = 1 - Math.pow(1 - k, 3);
+            el.textContent = String(Math.round(eased * target));
+            if (k < 1) requestAnimationFrame(step);
+          }
+          if (reduceMotion) { el.textContent = String(target); }
+          else { requestAnimationFrame(step); }
+        });
+        statIo.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  statIo.observe(document.querySelector('.stats'));
+})();
+</script>
+</body>
+</html>
