@@ -86,6 +86,16 @@
   .btn-ghost { border: 1px solid var(--hairline); color: var(--cream); }
   .btn-ghost:hover { border-color: var(--emerald); color: var(--emerald); transform: translateY(-3px); }
 
+  /* kontakt – prepínač spôsobu kontaktu */
+  .contact-choice { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 36px; }
+  .cc-label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream-dim); }
+  .cc-seg { display: inline-flex; gap: 5px; padding: 5px; border: 1px solid var(--hairline); border-radius: 100px; background: var(--ink-2); }
+  .cc-opt { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim); background: transparent; border: 0; padding: 12px 22px; border-radius: 100px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .cc-opt.is-active { background: var(--emerald); color: var(--ink); font-weight: 700; }
+  .call-card { max-width: 460px; margin: 0 auto 30px; border: 1px solid var(--hairline); border-radius: 20px; background: var(--ink-2); padding: 32px 30px; text-align: center; }
+  .call-card[hidden] { display: none; }
+  .call-card .cc-card-txt { color: var(--cream-dim); margin: 0 0 26px; }
+
   footer { border-top: 1px solid var(--hairline); padding: 32px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   footer a, footer span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cream-dim); text-decoration: none; }
   footer a:hover { color: var(--emerald); }
@@ -206,10 +216,24 @@
   <div class="shell">
     <div class="eyebrow">Kontakt</div>
     <h2>Ozvite sa.</h2>
-    <p>Napíšte mi alebo si rovno vyberte termín hovoru. Rád ukážem, ako to celé funguje na živom webe barbershopu.</p>
-    <div class="btn-row">
+    <p>Stačí email. A ak chcete, dohodnime si aj krátky online hovor, na ktorom ukážem, ako to celé funguje na živom webe barbershopu.</p>
+
+    <div class="contact-choice rv">
+      <span class="cc-label">Ako to vybavíme?</span>
+      <div class="cc-seg" role="radiogroup" aria-label="Spôsob kontaktu">
+        <button type="button" class="cc-opt is-active" id="ccEmail" role="radio" aria-checked="true">Stačí email</button>
+        <button type="button" class="cc-opt" id="ccCall" role="radio" aria-checked="false">Aj online hovor</button>
+      </div>
+    </div>
+
+    <div class="call-card" id="callCard" hidden>
+      <div class="eyebrow" style="margin-bottom: 12px;">Termín hovoru</div>
+      <p class="cc-card-txt">Vyberte si termín, ktorý vám sedí. Krátky online hovor (15–20 min) cez Google Meet alebo telefón.</p>
       <a class="btn btn-primary" href="https://calendar.app.google/AtgAoAKzQrSC9w7U9" target="_blank" rel="noopener">Vybrať termín hovoru</a>
-      <a class="btn btn-ghost" href="mailto:michal.liska97@gmail.com?subject=Web%20pre%20moju%20firmu">Napísať email</a>
+    </div>
+
+    <div class="btn-row">
+      <a class="btn btn-primary" id="mailBtn" href="mailto:michal.liska97@gmail.com?subject=Web%20pre%20moju%20firmu">Napísať email</a>
     </div>
   </div>
 </section>
@@ -225,6 +249,28 @@
     en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.15 });
   document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+})();
+
+// prepínač spôsobu kontaktu: default „Stačí email", po výbere hovoru sa ukáže karta s termínom
+(function () {
+  var email = document.getElementById('ccEmail');
+  var call = document.getElementById('ccCall');
+  var card = document.getElementById('callCard');
+  var mailBtn = document.getElementById('mailBtn');
+  if (!email || !call || !card || !mailBtn) return;
+  function select(wantCall) {
+    call.classList.toggle('is-active', wantCall);
+    email.classList.toggle('is-active', !wantCall);
+    call.setAttribute('aria-checked', wantCall ? 'true' : 'false');
+    email.setAttribute('aria-checked', wantCall ? 'false' : 'true');
+    card.hidden = !wantCall;
+    // email je hlavné tlačidlo pri „len email", vedľajšie keď je zvolený hovor
+    mailBtn.classList.toggle('btn-primary', !wantCall);
+    mailBtn.classList.toggle('btn-ghost', wantCall);
+  }
+  email.addEventListener('click', function () { select(false); });
+  call.addEventListener('click', function () { select(true); });
+  select(false); // predvolene: iba email
 })();
 </script>
 </body>
